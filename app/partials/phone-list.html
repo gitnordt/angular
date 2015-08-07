@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <!--Sidebar content-->
+	  <p style='text-align:center; font-weight:bold;'>Hello, {{name}}!</p>
+	  <br>
+      Search: <input ng-model="query"><br><br>
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="name">Alphabetical</option>
+        <option value="age">Newest</option>
+      </select>
+	  <br><br>
+	  <p>Total number of phones: {{phones.length}}</p>
+	  <p>Query: {{query}}</p>
+    </div>
+    <div class="col-md-10">
+      <!--Body content-->
+      <ul class="phones">
+        <li ng-repeat="phone in phones | filter:query | orderBy:orderProp"
+            class="thumbnail phone-listing">
+          <a href="#/phones/{{phone.id}}" class="thumb"><img ng-src="{{phone.imageUrl}}"></a>
+          <a href="#/phones/{{phone.id}}">{{phone.name}}</a>
+          <p>{{phone.snippet}}</p>
+        </li>
+      </ul>
+    </div>
+	<div class="col-md-8">
+		<table>
+		  <tr><th>row number</th></tr>
+		  <tr ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7]"><td ng-repeat="j in [0, 1, 2, 3, 4, 5, 6, 7]">{{j+1}}</td></tr>
+		</table>
+	</div>
+  </div>
+</div>
