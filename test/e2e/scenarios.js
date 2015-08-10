@@ -1,9 +1,9 @@
 'use strict';
 
-/* http://docs.angularjs.org/guide/dev_guide.e2e-testing */
+/* https://docs.angularjs.org/guide/e2e-testing */
 
 describe('PhoneCat App', function() {
-
+   
   it('should redirect index.html to index.html#/phones', function() {
     browser.get('app/index.html');
     browser.getLocationAbsUrl().then(function(url) {
@@ -11,6 +11,24 @@ describe('PhoneCat App', function() {
       });
   });
 
+	afterEach(function() {  
+		browser.manage().logs().get('browser').then(function(browserLog) {
+			//console.log('\n log: ' + require('util').inspect(browserLog));
+			//expect(browserLog.length).toEqual(0); //expects no errors
+		
+			var i = 0,
+				severWarnings = false;
+
+			for(i; i<=browserLog.length-1; i++){
+				if(browserLog[i].level.name === 'SEVERE'){
+					console.log('\n' + browserLog[i].level.name + " ERROR:");
+					console.log(browserLog[i].message);
+					severWarnings = true;
+				}
+			}
+			expect(severWarnings).toBe(false);//expects no errors
+		});
+	});
 
   describe('Phone list view', function() {
 
@@ -61,7 +79,16 @@ describe('PhoneCat App', function() {
       ]);
     });
 
+    it('should display the current filter value in the title bar', function() {
+	  var query = element(by.model('query'));
+    
+	  query.clear();
+      expect(browser.getTitle()).toMatch(/Google Phone Gallery:\s*$/);
 
+      query.sendKeys('nexus');
+      expect(browser.getTitle()).toMatch(/Google Phone Gallery: nexus$/);
+    });
+	
     it('should render phone specific links', function() {
       var query = element(by.model('query'));
       query.sendKeys('nexus');
@@ -78,8 +105,7 @@ describe('PhoneCat App', function() {
     beforeEach(function() {
       browser.get('app/index.html#/phones/nexus-s');
     });
-
-
+	
     it('should display nexus-s page', function() {
       expect(element(by.binding('phone.name')).getText()).toBe('Nexus S');
     });
@@ -97,5 +123,5 @@ describe('PhoneCat App', function() {
       element(by.css('.phone-thumbs li:nth-child(1) img')).click();
       expect(element(by.css('img.phone.active')).getAttribute('src')).toMatch(/img\/phones\/nexus-s.0.jpg/);
     });
-  });
+  }); 
 });

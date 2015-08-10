@@ -4,7 +4,7 @@
       <!--Sidebar content-->
 	  <p style='text-align:center; font-weight:bold;'>Hello, {{name}}!</p>
 	  <br>
-      Search: <input ng-model="query"><br><br>
+      Search: <input ng-model="query" onkeyup="myQuery(this);"><br><br>
       Sort by:
       <select ng-model="orderProp">
         <option value="name">Alphabetical</option>

@@ -6,6 +6,9 @@ var phonecatControllers = angular.module('phonecatControllers', []);
 
 phonecatControllers.controller('PhoneListCtrl', ['$scope', 'Phone',
   function($scope, Phone) {
+	console.log($scope);
+	console.log($scope.$parent);
+	
     $scope.phones = Phone.query();
     $scope.orderProp = 'age';
 	$scope.name = "World";
@@ -21,3 +24,7 @@ phonecatControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', 'Ph
       $scope.mainImageUrl = imageUrl;
     };
   }]);
+  
+function myQuery(query){
+	$('title')[0].innerHTML = "Google Phone Gallery: " + query.value;
+}
