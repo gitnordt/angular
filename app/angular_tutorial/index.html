@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html ng-app="megaStore">
+<!--
+Requirements  : 
+Add angular script tag 
+add an ng-app attribute directive, ng stands for angular and lets code know where to apply angular in the code
+-->
+<head>
+<script type="text/javascript" src="angular.js"></script>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="products.js"></script>
+</head>
+
+<style>
+
+.ng-invalid.ng-dirty{
+  	border-color:red;
+ }
+.ng-valid.ng-dirty{
+  	border-color:green;
+ }
+
+</style>
+<!--
+binding expressions {{ expression }} : used in angular to evaluate data, expressions, etc.        
+	<ul class="img-thumbnails clearfix">
+          <li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
+            <img ng-src="{{image}}" />
+          </li>
+        </ul>
+-->
+
+<!--directives : ng_app, ng-controller, ng-hide, ng-show, ng-repeat, ng-src(images), ng-click...
+a directive to bind html to behaviors in its corresponding function with the same name
+<body ng-controller = “StoreControl”>
+<img ng-src="{{product.images[0]}}"/>
+-->
+
+<!--filters : for formatting data. There are existing currency, date, uppercase,
+lowercase, limitTo(set string and array limits), orderBy(field, -field) filters in angular already-->
+
+<!--ng-model is setting the value of a variable based on input from a form-->
+
+<!--angular built in validation for urls, email, and numbers -->
+
+<!--directive for controller with an alias assigned to it for quick binding of expressions-->
+<!--Directives can be used for template-expanding - simplest, define a custom tag or attribute that is expanded or replaced. Can also be
+    used for expressing complex UI, calling events and registering event handlers, reusing common components.-->
+  <body>
+    <div>
+	<div ng-controller="EntertainmentController as ent">
+		<h1>{{ent.artist.name}}</h1>
+		<em>{{ent.artist.genre}}</em>
+		<!--paragraph will only be displayed if the value of the solo variable is true-->
+		<p ng-show ="ent.artist.solo"> Solo Act </p>
+		<ol  ng-repeat="recording in ent.recording">
+			<li>
+				{{recording.title}} {{recording.length}}
+				<!--Pipe send the price to the currency preset filter-->
+				<br>{{recording.price | currency}}<hr>
+			</li>
+		</ol>
+	</div>
+
+	<!--working with tabs. See logic in app.js. Set the initial tab and add content:-->
+	<!--commented out to store as a template in product-panels.html-->
+	<!--<section ng-controller="PanelController as panel">
+		
+		<ul>
+			<li ng-class="{active:panel.isSelected(1)}"><a href ng-click="panel.selectTab(1)">Description</a></li>
+			<li ng-class="{active:panel.isSelected(2)}"><a href ng-click="panel.selectTab(2)">Specifications</a></li>
+			<li ng-class="{active:panel.isSelected(3)}"><a href ng-click="panel.selectTab(3)">Reviews</a></li>
+		</ul>
+
+		<div class="panel" ng-show="panel.isSelected(1)">
+			<p> I'm the content in tab one </p>
+		</div>
+	</section>-->
+	<product-panels></product-panels> <!--shows the above code used as a template-->
+
+	<div ng-controller="StoreController as store">
+		
+		<div ng-repeat="product in store.products">
+			<!--pulled out the header below to create a template(product-title.html) for reusability and prevention of duplicate code:
+				<!--<h3>{{product.name}}
+					<em>${{product.price}}</em>
+				   </h3>
+			-->
+			<!--<h3 ng-include="'product-title.html'"></h3> <!--ajax request to pull contents of file, not the preferred way when including a template-->
+			<product-title></product-title> <!--element directive used for including a custom template. use element directives for UI widgets. -->
+			<h3 product-header></h3> <!--use attribute directives for mixins that add behaviors like tooltips.--> 
+			
+			<ul class="img-thumbnails clearfix" ng-show="product.images.length">
+			    <!--looping through images only if images exist -->
+	 		    <li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
+	  			  <img ng-src="{{image}}" />
+	 		    </li>
+			 </ul>
+
+			<ul>
+			    <h4>Reviews</h4>
+				<!--looping through reviews-->
+				<li ng-repeat="review in product.reviews">
+				<blockquote>
+				  <strong> {{review.stars}} Stars </strong>
+				  {{review.body}}
+				  <cite class="clearfix">{{review.author}}</cite>
+				</blockquote>
+			    </li>
+			</ul>
+
+			<!-- Form submit - pass in the product that the new review needs to be added to. Turn off default html form validation-->
+			<form name="reviewForm" ng-controller="ReviewController as revCtrl" ng-submit="reviewForm.$valid && revCtrl.addReview(product)" novalidate>
+			  <!--  Live Preview -->
+		     	  <blockquote>
+				<strong>{{reviewCtrl.review.stars}} Stars</strong>
+				{{reviewCtrl.review.body}}
+				<cite class="clearfix">-{{reviewCtrl.review.author}} on {{review.createdOn | date}}</cite>
+		          </blockquote>
+
+			  <!--Review Form -->
+			  <h4>Submit a Review</h4>
+			  <fieldset class="form-group">
+			  	<select ng-model="revCtrl.review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars" required>
+			  		<option value="">Rate the Product</option>
+			  	</select>
+			  </fieldset>
+			  <fieldset class="form-group">
+			  	<textarea ng-model="revCtrl.review.body" class="form-control" placeholder="Write a short review of the product..." title="Review">
+				</textarea>
+			  </fieldset>
+			  <fieldset class="form-group">
+				<input ng-model="revCtrl.review.author" type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" required/>
+			  </fieldset>
+			  <fieldset class="form-group">
+				<div> reviewForm is {{reviewForm.$valid}} </div>
+				<input type="submit" class="btn btn-primary pull-right" value="Submit Review" />
+			  </fieldset>
+			</form>
+
+
+
+		</div>
+	</div>
+
+    </div>
+  </body>
+</html>
